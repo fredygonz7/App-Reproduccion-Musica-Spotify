@@ -3,10 +3,11 @@
 // const client_secret = 'f4182aa413d5415fb695ed26bb054e14';
 // var scopes = 'user-read-private user-read-email';
 
-const access_token = "BQDotvgS1GAZJBxYIGZXmJoGtHoptI1NWsdAlLKg-88H1saLYue_3E4oA25AcofonZkJ0YQEqEabXYDGMa3KHrKFQ3OvcA6-kB72bvzGxaDfmnjPwddBIxTWJb08mUGSARgELHTk5Bm_wbiarIdqF6Zg10VZQLndBu1P-9v4K-bq"
+const access_token = "BQARBgJwIfx8XCznd4Ww852AYh0KDcPPXUrQ3tJXVJxb8oCg4uNbqlbvEgFbrQ551QdkLnGbY_6bWHPJ7osqoRBgro5pZoXaJa5pDuF3e0FjHTBqJs3bBBMdXj1wLAF2S7TPPhZTBfyB2ebjOTxI9pxdeXZSGoIPHO5y2RbpWmutCR3cWRDODBknWWfN57T6u93kPpsonIAiUVsjt2YWPWaJoTI6j0WOem72V-Z6GZ6URMaN3SiS6fnvKCvxh2yz7I6kD0kZ6fc";
 
-function invalidAccessToken() {
+function invalidAccessToken(error) {
     document.getElementById("loggedin").className = "uk-hidden";
+    console.log(error);
 }
 
 // user profile
@@ -16,7 +17,7 @@ function showUserProfile(response) {
     // console.log(response);
     if (typeof response === "object") {
         if (typeof response.error === "object") {
-            invalidAccessToken();
+            invalidAccessToken(response.error);
             // console.log(response.error);
         }
         else if (typeof response.display_name === "string") {
@@ -31,75 +32,118 @@ function showUserProfile(response) {
             document.getElementById("user-href").innerHTML = response.href;
             document.getElementById("user-href").href = response.href;
 
-            document.getElementById("loggedin").className = "uk-show";
+            // show information
+            document.getElementById("loggedin").className = "";
         }
     }
 }
 
-function getPlaylist() {
-    request(urlPlaylist, access_token, showPlaylist)
+function getPlaylists() {
+    request(urlPlaylists, access_token, showPlaylists)
 }
-const urlPlaylist= 'https://api.spotify.com/v1/me/playlists/'
-request(urlPlaylist, access_token, showPlaylist);
-function showPlaylist(response) {
-    console.log(response);
+const urlPlaylists= 'https://api.spotify.com/v1/me/playlists/'
+getPlaylists();
+function showPlaylists(response) {
+    // console.log(response);
     if (typeof response === "object") {
         
         if (typeof response.error === "object") {
-            invalidAccessToken();
+            invalidAccessToken(response.error);
         }
         else if (typeof response.items === "object") {
-            let playlist = document.getElementById("playlist");
-            while (playlist.hasChildNodes()) {
-                playlist.removeChild(playlist.firstChild);
+            document.getElementById("playlists").hidden = false;
+            document.getElementById("playlist").hidden = true;
+            let playlists = document.getElementById("playlists");
+            while (playlists.hasChildNodes()) {
+                playlists.removeChild(playlists.firstChild);
             }
             response.items.forEach(element => {
-                console.log(element);
+                // console.log(element);
                 let card = document.createElement("div");
-                card.id = "playlist-" + element.name;
-                card.className = "uk-card uk-card-default";
+                card.id = element.id;
+                card.className = "uk-animation-toggle";
+                // card.setAttribute("value-href", response.href);
+                card.onclick = function () { getPlaylist(element.href) };
 
-                // imagen
-                let div_img = document.createElement("div");
-                div_img.className = "uuk-card-media-top";
+                let div = document.createElement("div");
+                div.className = "uk-card uk-card-default uk-card-body uk-animation-scale-up";
+                div.style.height = "100%";
 
                 let img = document.createElement("img");
-                // img.className = "uk-border-circle";
-                // img.style.width = "150px"
                 img.src = element.images[0].url;
 
-                div_img.appendChild(img)
+                div.appendChild(img)
 
-                // descripcion
-                let div_desp = document.createElement("div");
-                div_desp.className = "uk-card-body";
+                let tittle = document.createElement("h4");
+                tittle.className = "uk-card-title";
+                tittle.appendChild(document.createTextNode(element.name));
 
-                let h3 = document.createElement("h3");
-                h3.className = "uk-card-title";
-                h3.appendChild(document.createTextNode(element.name));
+                div.appendChild(tittle);
 
-                let p = document.createElement("p");
-                p.appendChild(document.createTextNode(element.description));
+                card.appendChild(div);
 
-                div_desp.appendChild(h3);
-                div_desp.appendChild(p);
-
-                card.appendChild(div_img);
-                card.appendChild(div_desp);
-                playlist.appendChild(card);
+                playlists.appendChild(card);
             })
         }
     }
 }
 
+let urlplay = "https://api.spotify.com/v1/playlists/1LqopOK31Etx30eCDyApNR";
+function getPlaylist(url) {
+    request(url, access_token, showPlaylist)
+}
 
-// url = "https://accounts.spotify.com/api/token";
-// fetch(url, {
-//     method: 'POST',
-//     // headers: { 'Authorization': 'Basic ' + client_id },
-//     // data: {
-//     //    'grant_type': client_secret}
-//     headers: { 'Authorization': 'Basic ' + (new ArrayBuffer(client_id + ':' + client_secret).toString('base64')) }
-// }).then(res => res.json())
-//     .catch(error => console.log(error))
-//     .then(response => console.log(response));
+function showPlaylist(response) {
+    console.log(response);
+    if (typeof response === "object") {
+
+        if (typeof response.error === "object") {
+            invalidAccessToken();
+        }
+        else {
+            document.getElementById("playlists").hidden = true;
+            document.getElementById("playlist").hidden = false;
+
+            document.getElementById("playlist-tittle").innerHTML = response.name;
+            document.getElementById("playlist-description").innerHTML = response.description;
+            document.getElementById("playlist-img").src = response.images[0].url;
+            
+            let tbody_description = document.getElementById("playlist-table-tbody-description");
+            while (tbody_description.hasChildNodes()) {
+                tbody_description.removeChild(tbody_description.firstChild);
+            }
+
+            response.tracks.items.forEach(element => {
+                let tr = document.createElement("tr");
+
+                let td_img = document.createElement("td");
+                let img = document.createElement("img");
+                img.className = "uk-border-circle";
+                img.style.width = "40px"
+                img.src = element.track.album.images[0].url;
+                td_img.appendChild(img);
+
+                let td_name = document.createElement("td");
+                let name = document.createElement("a");
+                name.className = "uk-link-reset";
+                name.appendChild(document.createTextNode(element.track.name));
+                name.onclick = function () { alert() };
+                td_name.appendChild(name);
+
+                let td_artist = document.createElement("td");
+                for (let index = 0; index < element.track.album.artists.length; index++) {
+                    if (index == 0)
+                        td_artist.appendChild(document.createTextNode(element.track.album.artists[index].name));
+                    if (index > 0)
+                        td_artist.appendChild(document.createTextNode(", " + element.track.album.artists[index].name));
+                }
+
+                tr.appendChild(td_img);
+                tr.appendChild(td_name);
+                tr.appendChild(td_artist);
+
+                tbody_description.appendChild(tr);
+            });
+        }
+    }
+}

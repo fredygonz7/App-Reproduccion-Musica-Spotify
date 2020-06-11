@@ -18,10 +18,19 @@
             <div class="uk-container uk-container-expand">
                 <nav class="uk-navbar uk-navbar-container">
                     <div class="uk-navbar-left">
-                        <a class="uk-navbar-toggle" uk-toggle="target: #offcanvas-slide">
+                        <!-- <a class="uk-navbar-toggle" uk-toggle="target: #offcanvas-slide">
                             <span uk-icon="user"></span>
                             <span class="uk-margin-small-left" id="user-login">Please, add the token to the code</span>
                         </a>
+                        <a href="#">Item</a> -->
+                        <ul class="uk-navbar-nav">
+                            <li class=""><a class="uk-navbar-toggle" uk-toggle="target: #offcanvas-slide">
+                                    <span uk-icon="user"></span>
+                                    <span class="uk-margin-small-left" id="user-login">Please, add the token to the
+                                        code</span>
+                                </a></li>
+                            <li><a href="#" onclick="getPlaylists()">Playlist</a></li>
+                        </ul>
                     </div>
                 </nav>
             </div>
@@ -52,9 +61,68 @@
                     </div>
                 </div>
             </div>
+            <div id="body" class="uk-container">
+                <div id="playlists" class="uk-child-width-1-4@m uk-child-width-1-2@s" uk-grid>
+                </div>
+                <div id="playlist">
+                    <div class="uk-section uk-section-default">
+                        <div class="uk-container">
+                            <!-- class="uk-grid-match" uk-grid -->
+                            <div class="" uk-grid> 
+                                <div class="uk-width-1-4@m uk-width-1-3@s">
+                                    <img class="" width="" src="" id="playlist-img" uk-img />
+                                </div>
+                                <div class="uk-width-expand@m uk-width-expand@s">
+                                    <h3 id="playlist-tittle">
+                                    </h3>
+                                    <!-- <dl class="">
+                                        <dt>Description</dt>
+                                        <dd id="playlist-description"></dd>
+                                    </dl> -->
+                                    <p id="playlist-description"></p>
+                                </div>
+                                <!-- <div>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
+                                </div>
+                                <div>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
+                                </div> -->
+                            </div>
 
+                        </div>
+                    </div>
+
+                    <div class="uk-section uk-section-muted">
+                        <div class="uk-container" id="playlist-container">
+
+                            <div class="uk-overflow-auto">
+                                <table class="uk-table uk-table-hover uk-table-middle uk-table-divider">
+                                    <thead>
+                                        <tr>
+                                            <th class="uk-table-shrink">Image</th>
+                                            <th class="uk-table-expand">Name</th>
+                                            <th class="uk-table-expand">Artist</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="playlist-table-tbody-description">
+                                        <tr>
+                                            <td><img class="uk-preserve-width uk-border-circle" src=""
+                                                    width="40" alt=""></td>
+                                            <td class="uk-table-link">
+                                                <a class="uk-link-reset" href=""></a>
+                                            </td>
+                                            <td class="uk-text-nowrap"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- pestañas -->
-            <div>
+            <!-- <div>
                 <ul class="uk-subnav uk-subnav-pill" uk-switcher>
                     <li><a href="#" onclick="getPlaylist()">Playlist</a></li>
                     <li><a href="#" onclick="getAlbums()">Albums</a></li>
@@ -71,7 +139,7 @@
                         <p>3</p>
                     </div>
                 </ul>
-            </div>
+            </div> -->
         </div>
         <script src="js/requests.js"></script>
         <script src="js/index.js"></script>
