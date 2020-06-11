@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reproduccion de Spotify</title>
+    <link rel="stylesheet" href="css/uikit.min.css" />
+    <script src="js/uikit.min.js"></script>
+    <script src="js/uikit-icons.min.js"></script>
+</head>
+
+<body>
+    <!-- navbar -->
+    <div id="">
+        <div uk-sticky="media: 960" class="uk-navbar-container tm-navbar-container uk-sticky">
+            <!-- <img src="images/light.jpg" alt=""> -->
+            <div class="uk-container uk-container-expand">
+                <nav class="uk-navbar uk-navbar-container">
+                    <div class="uk-navbar-left">
+                        <a class="uk-navbar-toggle" uk-toggle="target: #offcanvas-slide">
+                            <span uk-icon="user"></span>
+                            <span class="uk-margin-small-left" id="user-login">Please, add the token to the code</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- User logged in -->
+        <div id="loggedin" class="uk-hidden">
+            <!-- informacion del usuario -->
+            <div id="offcanvas-slide" uk-offcanvas="overlay: true">
+                <div class="uk-offcanvas-bar">
+                    <h3 id="user-display-name" style="text-align: center;"></h3>
+                    <div class="uk-width-auto">
+                        <img class="uk-border-circle uk-align-center" width="150" src="" id="user-img"
+                            style="margin: auto; display: block;" />
+                    </div>
+                    <div class="">
+                        <dl class="">
+                            <dt>Id</dt>
+                            <dd id="user-id"></dd>
+                            <dt>Email</dt>
+                            <dd id="user-email"></dd>
+                            <dt>Spotify URI</dt>
+                            <dd><a href="" id="user-external_urls-spotify"></a></dd>
+                            <dt>Link</dt>
+                            <dd><a href="" id="user-href"></a></dd>
+                            <dt>Country</dt>
+                            <dd id="user-country"></dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <!-- pestañas -->
+            <div>
+                <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+                    <li><a href="#" onclick="getplaylist()">Playlist</a></li>
+                    <li><a href="#" onclick="getAlbums()">Albums</a></li>
+                    <li><a href="#" onclick="getTracks()">Tracks</a></li>
+                </ul>
+                <ul class="uk-switcher uk-margin">
+                    <div id="playlist" class="uk-child-width-1-4@m uk-child-width-1-2@s" uk-grid>
+
+                    </div>
+                    <div id="albums" class="uk-child-width-1-4@m uk-child-width-1-2@s" uk-grid>
+
+                    </div>
+                    <div>
+                        <p>3</p>
+                    </div>
+                </ul>
+            </div>
+        </div>
+        <script src="js/requests.js"></script>
+        <script src="js/index.js"></script>
+</body>
+
+</html>
