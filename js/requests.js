@@ -6,7 +6,7 @@ function request(url, access_token, callback) {
                 'Authorization': 'Bearer ' + access_token
             }
         }).then(res => res.json())
-            .catch(error => invalidAccessToken(error))
+            .catch(error => console.log(error))
             .then(response => callback(response));
     }
 }
