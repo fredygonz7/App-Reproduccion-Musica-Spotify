@@ -3,7 +3,7 @@
 // const client_secret = 'f4182aa413d5415fb695ed26bb054e14';
 // var scopes = 'user-read-private user-read-email';
 
-const access_token = "BQARBgJwIfx8XCznd4Ww852AYh0KDcPPXUrQ3tJXVJxb8oCg4uNbqlbvEgFbrQ551QdkLnGbY_6bWHPJ7osqoRBgro5pZoXaJa5pDuF3e0FjHTBqJs3bBBMdXj1wLAF2S7TPPhZTBfyB2ebjOTxI9pxdeXZSGoIPHO5y2RbpWmutCR3cWRDODBknWWfN57T6u93kPpsonIAiUVsjt2YWPWaJoTI6j0WOem72V-Z6GZ6URMaN3SiS6fnvKCvxh2yz7I6kD0kZ6fc";
+const access_token = "BQCqG_iBKJp4RI-vBGkXgOPbzoJXiHyM6eFJDFnlXVa4Fh2NRLkChOL4mS_zTeNpCETOHAJCoFqMMRBa2L7Hu980zN2kImmK23iFYou_wEk3s0uq0EmGNfu4jTBJXbfR-me8nfnxRfS-LfngbRSq_0Kg__ywB1JShw_MplWSWvgQuOsq-UZyHYaO9MwgYXY2fAyxTPQHxNiRnMv1o2w1z1t1vQ5EYuGkLGKSAcI_FbqU9vu6BB_1VeXhEvh3Hedz07PSzJu7UzE";
 
 function invalidAccessToken(error) {
     document.getElementById("loggedin").className = "uk-hidden";
@@ -88,7 +88,6 @@ function showPlaylists(response) {
     }
 }
 
-let urlplay = "https://api.spotify.com/v1/playlists/1LqopOK31Etx30eCDyApNR";
 function getPlaylist(url) {
     request(url, access_token, showPlaylist)
 }
@@ -127,7 +126,8 @@ function showPlaylist(response) {
                 let name = document.createElement("a");
                 name.className = "uk-link-reset";
                 name.appendChild(document.createTextNode(element.track.name));
-                name.onclick = function () { alert() };
+                name.onclick = function () { getTrack(element.track.href)};
+                // name.href = "modal-container";
                 td_name.appendChild(name);
 
                 let td_artist = document.createElement("td");
@@ -146,4 +146,53 @@ function showPlaylist(response) {
             });
         }
     }
+}
+
+function getTrack(url) {
+    UIkit.modal(document.getElementById('modal-container')).show(); 
+    request(url, access_token, showTrack)
+}
+
+function showTrack(response) {
+    console.log(response);
+    if (typeof response === "object") {
+
+        if (typeof response.error === "object") {
+            invalidAccessToken();
+        }
+        else {
+            console.log("mango");
+            document.getElementById("track-img").src = response.album.images[0].url;
+            document.getElementById("track-name").innerHTML = response.name;
+            document.getElementById("track-album").innerHTML = response.album.name;
+
+            let track_play = document.getElementById("track-play");
+            while (track_play.hasChildNodes()) {
+                track_play.removeChild(track_play.firstChild);
+            }
+            let track_video = document.createElement("audio");
+            track_video.setAttribute("controls", "");
+
+            let track_source = document.createElement("source");
+            track_source.type = "audio/mpeg";
+            track_source.src = response.preview_url;
+
+            track_video.appendChild(track_source);
+
+            track_play.appendChild(track_video);
+
+            let artist = document.getElementById("track-artist");
+            for(let index = 0; index < response.artists.length; index++) {
+                if (index == 0)
+                    artist.appendChild(document.createTextNode(response.artists[index].name));
+                if (index > 0)
+                    artist.appendChild(document.createTextNode(", " + response.artists[index].name));
+            }
+        }
+    }
+}
+
+request("https://api.spotify.com/v1/tracks/4QjHUnSUkpMhunzvgK0efE", access_token, showConsole)
+function showConsole(response) {
+    console.log(response);
 }

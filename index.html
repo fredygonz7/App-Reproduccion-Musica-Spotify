@@ -75,20 +75,9 @@
                                 <div class="uk-width-expand@m uk-width-expand@s">
                                     <h3 id="playlist-tittle">
                                     </h3>
-                                    <!-- <dl class="">
-                                        <dt>Description</dt>
-                                        <dd id="playlist-description"></dd>
-                                    </dl> -->
                                     <p id="playlist-description"></p>
                                 </div>
-                                <!-- <div>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
-                                </div>
-                                <div>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
-                                </div> -->
                             </div>
-
                         </div>
                     </div>
 
@@ -116,7 +105,40 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
 
+                    <!-- modal track -->
+                    <!-- <a class="uk-button uk-button-default" href="#modal-container" uk-toggle>Open</a> -->
+                    <div id="modal-container" class="uk-modal-container" uk-modal>
+                        <div class="uk-modal-dialog uk-modal-body">
+                            <div class="uk-container" uk-grid>
+                                <div class=" uk-width-1-4@m uk-width-1-3@s">
+                                    <img id="track-img" uk-img >
+                                </div>
+                                <div class="uk-width-expand@m uk-width-expand@s">
+                                    <dl class="">
+                                        <dt>Track</dt>
+                                        <dd id="track-name"></dd>
+                                        <dt>Artists</dt>
+                                        <dd id="track-artist"></dd>
+                                        <dt>Album</dt>
+                                        <dd id="track-album"></dd>
+                                        <dt>Preview</dt>
+                                        <dd id="track-play">
+                                            <audio controls>
+                                                <!-- <source id="track-play1" src="" type="audio/ogg">
+                                                <source id="track-play2" src="" type="audio/mpeg">
+                                                Your browser does not support the audio element. -->
+                                            </audio>
+                                        </dd>
+                                    </dl>
+                                </div>
+                                <!-- <div class="uk-position-center-right uk-margin-xlarge-left uk-margin-large-right">
+                                    <a id="track-play" href="#" uk-icon="icon: play-circle"></a>
+                                </div> -->
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -140,7 +162,10 @@
                     </div>
                 </ul>
             </div> -->
-        </div>
+            <!-- <audio controls>
+                <source src="https://p.scdn.co/mp3-preview/61906e579cfb6c6245101c4053c2c725a76691f4?cid=774b29d4f13844c495f206cafdad9c86" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio> -->
         <script src="js/requests.js"></script>
         <script src="js/index.js"></script>
 </body>
