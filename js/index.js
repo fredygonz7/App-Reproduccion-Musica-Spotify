@@ -1,4 +1,4 @@
-const access_token = "BQDHtWJNq_uB9kLoZwoscnAJkwLqfvBcmLyMWGzvP8pBhKtKHCNBCx1L2GM19MJ_sWCbb-ZKgh-8vVIIRcQ2L_mkv9xwDJ0CBq5cTN1OkCjm5qmcJe2nAhfBVcxILDdN4OahvoNMYkyv-g--vsSqL4p6v21F2M-BOrwN10iIpjSuzNV374THnxCfxOT96atvXtZLba1Iqd_zbfWqCx4lT8ekrSg4R3o4TK0_PkMKWsj-7G1LD3FJi_0TsVhMYc5ONmPfVjRQBXg";
+const access_token = "BQACIrC6_Y2qUrQiLcPo134RRGtMlMGH5BOxcZE07EC7-syYIA9dq4SJNbyfgIBZ1gZDlXiZNfxXLdPpZnsE7YC1imtpiAyB1STK5aCjDdPSGluJgj-s_v58QpbEQ7UT9Zbv9Bzm6bnv9eXu6di7gfa73ewctSJe9s6slo4oeTs2t25-8OcUL2KXj8uYn718kyt8PmW2hizF8YI5lIWUYvvGi1Wn5kRCYOzI2mzLAaNoo-2_3DnLyDgwpyMvt3-VlyFmQLOIGeQ";
 // 
 function invalidAccessToken(error) {
     // console.log(error);
@@ -29,6 +29,7 @@ function showUserProfile(response) {
             if (typeof response.images[0] === "object")
                 document.getElementById("user-img").src = response.images[0].url;
             document.getElementById("user-country").innerHTML = response.country;
+            document.getElementById("user-followers").innerHTML = response.followers.total;
             document.getElementById("user-external_urls-spotify").innerHTML = response.external_urls.spotify;
             document.getElementById("user-external_urls-spotify").href = response.external_urls.spotify;
             document.getElementById("user-href").innerHTML = response.href;
@@ -66,7 +67,7 @@ function showPlaylists(response) {
             response.items.forEach(element => {
                 let card = document.createElement("div");
                 card.id = element.id;
-                card.className = "uk-animation-toggle";
+                card.className = "uk-animation-toggle uk-text-center";
                 card.onclick = function () { getPlaylist(element.href) };
 
                 let div = document.createElement("div");
@@ -175,7 +176,7 @@ function getTrack(url) {
     request(url, access_token, showTrack)
 }
 function showTrack(response) {
-    // console.log(response);
+    console.log(response);
     if (typeof response === "object") {
 
         if (typeof response.error === "object") {
@@ -191,21 +192,21 @@ function showTrack(response) {
             while (track_play.hasChildNodes()) {
                 track_play.removeChild(track_play.firstChild);
             }
-            let track_video = document.createElement("audio");
-            track_video.setAttribute("controls", "");
+            let track_audio = document.createElement("audio");
+            track_audio.setAttribute("controls", "");
 
             let track_source = document.createElement("source");
             track_source.type = "audio/mpeg";
             track_source.src = response.preview_url;
 
-            track_video.appendChild(track_source);
+            track_audio.appendChild(track_source);
 
-            track_play.appendChild(track_video);
+            track_play.appendChild(track_audio);
 
             let artist = document.getElementById("track-artist");
             for(let index = 0; index < response.artists.length; index++) {
                 if (index == 0)
-                    artist.appendChild(document.createTextNode(response.artists[index].name));
+                    artist.innerHTML = response.artists[index].name;
                 if (index > 0)
                     artist.appendChild(document.createTextNode(", " + response.artists[index].name));
             }
