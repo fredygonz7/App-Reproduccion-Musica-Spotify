@@ -3,7 +3,7 @@
 // const client_secret = 'f4182aa413d5415fb695ed26bb054e14';
 // var scopes = 'user-read-private user-read-email';
 
-const access_token = "BQCqG_iBKJp4RI-vBGkXgOPbzoJXiHyM6eFJDFnlXVa4Fh2NRLkChOL4mS_zTeNpCETOHAJCoFqMMRBa2L7Hu980zN2kImmK23iFYou_wEk3s0uq0EmGNfu4jTBJXbfR-me8nfnxRfS-LfngbRSq_0Kg__ywB1JShw_MplWSWvgQuOsq-UZyHYaO9MwgYXY2fAyxTPQHxNiRnMv1o2w1z1t1vQ5EYuGkLGKSAcI_FbqU9vu6BB_1VeXhEvh3Hedz07PSzJu7UzE";
+const access_token = "BQA6y66JICExEEJ759Il8BYBozFPSi0HCXXDi-Ms_ChB0TzKZN_1Ll_mtVOO3WqRj01_HwNlU0h6jsQMEN63Y8W2hOoYBrg8WEcmFn2rPneRAXMk7TLrJ2MD-bZptvjyfpr_nafLw6HkEJgZVuzQQDQTmIxGquFGfgTh9R5tTMnKT77HSmB2p01FIwPLTzFVB-zcQ4AEi8ivZxmM0Ivp8SLFjEYW73CoahP3snRfEu1X0hXyi14i1UIlTRAWnR68H3XDrvWbHlU";
 
 function invalidAccessToken(error) {
     document.getElementById("loggedin").className = "uk-hidden";
@@ -25,7 +25,8 @@ function showUserProfile(response) {
             document.getElementById("user-display-name").innerHTML = response.display_name;
             document.getElementById("user-id").innerHTML = response.id;
             document.getElementById("user-email").innerHTML = response.email;
-            document.getElementById("user-img").src = response.images[0].url;
+            if (typeof response.images[0] === "object")
+                document.getElementById("user-img").src = response.images[0].url;
             document.getElementById("user-country").innerHTML = response.country;
             document.getElementById("user-external_urls-spotify").innerHTML = response.external_urls.spotify;
             document.getElementById("user-external_urls-spotify").href = response.external_urls.spotify;
@@ -70,7 +71,8 @@ function showPlaylists(response) {
                 div.style.height = "100%";
 
                 let img = document.createElement("img");
-                img.src = element.images[0].url;
+                if (typeof element.images[0] === "object")
+                    img.src = element.images[0].url;
 
                 div.appendChild(img)
 
@@ -104,8 +106,13 @@ function showPlaylist(response) {
             document.getElementById("playlist").hidden = false;
 
             document.getElementById("playlist-tittle").innerHTML = response.name;
+            document.getElementById("playlist-tittle").setAttribute("id-playlist", response.id);
             document.getElementById("playlist-description").innerHTML = response.description;
-            document.getElementById("playlist-img").src = response.images[0].url;
+
+            if (typeof response.images[0] === "object")
+                document.getElementById("playlist-img").src = response.images[0].url;
+            else
+                document.getElementById("playlist-img").src = "";
             
             let tbody_description = document.getElementById("playlist-table-tbody-description");
             while (tbody_description.hasChildNodes()) {
@@ -119,6 +126,7 @@ function showPlaylist(response) {
                 let img = document.createElement("img");
                 img.className = "uk-border-circle";
                 img.style.width = "40px"
+                if (typeof element.track.album.images[0] === "object")
                 img.src = element.track.album.images[0].url;
                 td_img.appendChild(img);
 
@@ -162,7 +170,8 @@ function showTrack(response) {
         }
         else {
             console.log("mango");
-            document.getElementById("track-img").src = response.album.images[0].url;
+            if (typeof response.album.images[0] === "object")
+                document.getElementById("track-img").src = response.album.images[0].url;
             document.getElementById("track-name").innerHTML = response.name;
             document.getElementById("track-album").innerHTML = response.album.name;
 
@@ -192,7 +201,60 @@ function showTrack(response) {
     }
 }
 
-request("https://api.spotify.com/v1/tracks/4QjHUnSUkpMhunzvgK0efE", access_token, showConsole)
-function showConsole(response) {
-    console.log(response);
+function postCreateAPlaylist() {
+    let urlCreatePlaylists = "https://api.spotify.com/v1/users/" + document.getElementById("user-display-name").innerHTML + "/playlists";
+    let name;
+    name = document.getElementById("create-playlist-name").value;
+    let description;
+    description = document.getElementById("create-playlist-description").value;
+    if (name == "" || description == "")
+        document.getElementById("info-create-playlist").innerHTML = "Por favor digite los campos";
+    else {
+        document.getElementById("info-create-playlist").innerHTML = "";
+        var data = {
+            "name": name,
+            "description": description,
+            "public": false
+        }
+        requestPost(urlCreatePlaylists, access_token, data, showCreateAPlaylist)
+    }
 }
+function showCreateAPlaylist(response) {
+    console.log("showCreateAPlaylist");
+    console.log(response);
+    if (typeof response === "object") {
+        if (typeof response.error === "object") {
+            invalidAccessToken();
+        }
+        else {
+            UIkit.modal(document.getElementById("modal-create-playlist")).hide();
+            getPlaylist(response.href)
+        }
+    }
+}
+
+function removePlaylist() {
+    let id_playlist = document.getElementById("playlist-tittle").getAttribute("id-playlist");
+    console.log("id", id_playlist);
+    
+    // let urlCreatePlaylists = "https://api.spotify.com/v1/users/" + id_playlist + "/playlists";
+    // let name;
+    // name = document.getElementById("create-playlist-name").value;
+    // let description;
+    // description = document.getElementById("create-playlist-description").value;
+    // if (name == "" || description == "")
+    //     document.getElementById("info-create-playlist").innerHTML = "Por favor digite los campos";
+    // else {
+    //     document.getElementById("info-create-playlist").innerHTML = "";
+    //     var data = {
+    //         "name": name,
+    //         "description": description,
+    //         "public": false
+    //     }
+    //     requestPost(urlCreatePlaylists, access_token, data, showCreateAPlaylist)
+    // }
+}
+// request("https://api.spotify.com/v1/tracks/4QjHUnSUkpMhunzvgK0efE", access_token, data, showConsole)
+// function showConsole(response) {
+//     console.log(response);
+// }
