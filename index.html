@@ -28,9 +28,10 @@
                                     <span uk-icon="user"></span>
                                     <span class="uk-margin-small-left" id="user-login">Please, add the token to the
                                         code</span>
-                                </a></li>
-                            <li><a href="#" onclick="getPlaylists()">Playlist</a></li>
-                            <li><a href="#modal-create-playlist" uk-toggle>Create Playlist</a></li>
+                                </a>
+                            </li>
+                            <li id="loggedin-botton-playlist" class="uk-hidden" ><a href="#" onclick="getPlaylists()">Playlist</a></li>
+                            <li id="loggedin-botton-create-playlist" class="uk-hidden" ><a href="#modal-create-playlist" uk-toggle>Create Playlist</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -82,9 +83,9 @@
                                             <button class="uk-button uk-button-secondary" type="button">Options</button>
                                             <div uk-dropdown>
                                                 <ul class="uk-nav uk-dropdown-nav">
-                                                    <li><a onclick="removePlaylist()">Remove Platlist</a>
+                                                    <li><a onclick="showModalEditPlaylist()" href="#modal-playlist" uk-toggle>Edit Playlist</a></li>
                                                     </li><li class="uk-nav-divider"></li>
-                                                    <li><a onclick="editPlayList()">Edit Playlist</a></li>
+                                                    <li><a onclick="removePlaylist()">Remove Platlist</a>
                                                 </ul>
                                             </div>
                                         </div>
@@ -166,7 +167,7 @@
                     <div class="uk-modal-dialog">
                         <button class="uk-modal-close-default" type="button" uk-close></button>
                         <div class="uk-modal-header">
-                            <h2 class="uk-modal-title">New playlist</h2>
+                            <h2 id="modal-create-playlist-tittle" class="uk-modal-title">New playlist</h2>
                         </div>
                         <div class="uk-modal-body">
                             <div class="uk-margin">
@@ -182,6 +183,29 @@
                         </div>
                         <div class="uk-modal-footer uk-text-center">
                             <span id="info-create-playlist"></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="modal-playlist" uk-modal>
+                    <div class="uk-modal-dialog">
+                        <button class="uk-modal-close-default" type="button" uk-close></button>
+                        <div class="uk-modal-header">
+                            <h2 id="modal-playlist-tittle" class="uk-modal-title">Edit Playlist</h2>
+                        </div>
+                        <div class="uk-modal-body">
+                            <div class="uk-margin">
+                                <input id="modal-playlist-name" class="uk-input" type="text" placeholder="Name">
+                            </div>
+                            <div class="uk-margin">
+                                <input id="modal-playlist-description" class="uk-input" type="text" placeholder="Description">
+                            </div>
+                        </div>
+                        <div class="uk-modal-footer uk-text-right">
+                            <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+                            <button class="uk-button uk-button-primary" type="button" onclick="editPlayList()">Save</button>
+                        </div>
+                        <div class="uk-modal-footer uk-text-center">
+                            <span id="modal-playlist-info"></span>
                         </div>
                     </div>
                 </div>

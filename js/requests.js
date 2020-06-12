@@ -55,7 +55,7 @@ function requestPut(url, access_token, data, callback) {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + access_token
         }
-    }).then(res => res.json())
+    }).then(res => res)
         .catch(error => console.error(error))
         .then(response => callback(response));
 }
