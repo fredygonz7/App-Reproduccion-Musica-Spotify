@@ -3,7 +3,7 @@
 // const client_secret = 'f4182aa413d5415fb695ed26bb054e14';
 // var scopes = 'user-read-private user-read-email';
 
-const access_token = "BQA6y66JICExEEJ759Il8BYBozFPSi0HCXXDi-Ms_ChB0TzKZN_1Ll_mtVOO3WqRj01_HwNlU0h6jsQMEN63Y8W2hOoYBrg8WEcmFn2rPneRAXMk7TLrJ2MD-bZptvjyfpr_nafLw6HkEJgZVuzQQDQTmIxGquFGfgTh9R5tTMnKT77HSmB2p01FIwPLTzFVB-zcQ4AEi8ivZxmM0Ivp8SLFjEYW73CoahP3snRfEu1X0hXyi14i1UIlTRAWnR68H3XDrvWbHlU";
+const access_token = "BQC2v2dbmbNTt-28iawev6I0KUSwVIoPTuxCDGZ4AuEpbsO42dIaXkRnv_q8rKw0Iwu_IDCbtoBln94fSWvm2PfPWTlEQSwmq5NGdHTFWLOH9V-wmEzrdeW3WnTT8vuMjwb-a2ShYNpIhtj8xO1cV5AETIdSHSoJJtgjYiB4hCuCvtnSTMwSwLW43NOmlVVhkIp5qGrw1tV84lX9fcV43vEI7tL_3zsEKuCBB8r_f8cZI-ULzC76nje5MviBwcGGAb8upSTpbf0";
 
 function invalidAccessToken(error) {
     document.getElementById("loggedin").className = "uk-hidden";
@@ -93,7 +93,6 @@ function showPlaylists(response) {
 function getPlaylist(url) {
     request(url, access_token, showPlaylist)
 }
-
 function showPlaylist(response) {
     console.log(response);
     if (typeof response === "object") {
@@ -119,7 +118,7 @@ function showPlaylist(response) {
                 tbody_description.removeChild(tbody_description.firstChild);
             }
 
-            response.tracks.items.forEach(element => {
+            response.tracks.items.forEach(function (element, index) {
                 let tr = document.createElement("tr");
 
                 let td_img = document.createElement("td");
@@ -138,6 +137,14 @@ function showPlaylist(response) {
                 // name.href = "modal-container";
                 td_name.appendChild(name);
 
+                let td_remove = document.createElement("td");
+                let a_remove = document.createElement("a");
+                a_remove.onclick = function () { removeTrackOfPlaylist(element.track.id, index) };
+                let span_remove = document.createElement("span");
+                span_remove.setAttribute("uk-icon","trash")
+                a_remove.appendChild(span_remove);
+                td_remove.appendChild(a_remove);
+
                 let td_artist = document.createElement("td");
                 for (let index = 0; index < element.track.album.artists.length; index++) {
                     if (index == 0)
@@ -149,6 +156,7 @@ function showPlaylist(response) {
                 tr.appendChild(td_img);
                 tr.appendChild(td_name);
                 tr.appendChild(td_artist);
+                tr.appendChild(td_remove);
 
                 tbody_description.appendChild(tr);
             });
@@ -169,7 +177,6 @@ function showTrack(response) {
             invalidAccessToken();
         }
         else {
-            console.log("mango");
             if (typeof response.album.images[0] === "object")
                 document.getElementById("track-img").src = response.album.images[0].url;
             document.getElementById("track-name").innerHTML = response.name;
@@ -253,6 +260,51 @@ function removePlaylist() {
     //     }
     //     requestPost(urlCreatePlaylists, access_token, data, showCreateAPlaylist)
     // }
+}
+
+/*
+PUT https://api.spotify.com/v1/playlists/{playlist_id}
+{
+    "name": "Updated Playlist Name",
+        "description": "Updated playlist description",
+            "public": false
+}*/
+
+function removeTrackOfPlaylist(id_track, positionTrack) {
+    let id_playlist = document.getElementById("playlist-tittle").getAttribute("id-playlist");
+    console.log("id", id_playlist);
+
+    var data = {
+        "tracks": [
+            {
+                "uri": "spotify:track:"+id_track,
+                "positions": [
+                    positionTrack
+                ]
+            }
+        ]
+    }
+    let urlDeleteTrackOfPlaylist = "https://api.spotify.com/v1/playlists/" + id_playlist + "/tracks";
+    console.log("data", data);
+    if (confirm("Are you sure?")) {
+        requestDelete(urlDeleteTrackOfPlaylist, access_token, data, showDeleteTrackOfPlaylist)
+    }
+}
+function showDeleteTrackOfPlaylist(response) {
+    console.log(response);
+    
+    if (typeof response === "object") {
+        if (typeof response.error === "object") {
+            if (response.error.message == "You cannot remove tracks from a playlist you don't own.")
+                alert(response.error.message)
+            else
+                invalidAccessToken();
+        }
+        else if (typeof response.snapshot_id === "string") {
+            let id_playlist = document.getElementById("playlist-tittle").getAttribute("id-playlist");
+            getPlaylist("https://api.spotify.com/v1/playlists/"+id_playlist)
+        }
+    }
 }
 // request("https://api.spotify.com/v1/tracks/4QjHUnSUkpMhunzvgK0efE", access_token, data, showConsole)
 // function showConsole(response) {
