@@ -1,4 +1,4 @@
-const access_token = "BQACIrC6_Y2qUrQiLcPo134RRGtMlMGH5BOxcZE07EC7-syYIA9dq4SJNbyfgIBZ1gZDlXiZNfxXLdPpZnsE7YC1imtpiAyB1STK5aCjDdPSGluJgj-s_v58QpbEQ7UT9Zbv9Bzm6bnv9eXu6di7gfa73ewctSJe9s6slo4oeTs2t25-8OcUL2KXj8uYn718kyt8PmW2hizF8YI5lIWUYvvGi1Wn5kRCYOzI2mzLAaNoo-2_3DnLyDgwpyMvt3-VlyFmQLOIGeQ";
+const access_token = "BQCnuAvL2EvqotvKn1tm_LFB9TSn2V3mUKPm-Zphk8QxOpiPX6tfNwP35ZRK0u4VbYKOP7gWJDZZFP6cRAgrD5k6o9GdMFLxfinpY-fOEASoPqsh0UZDAuJbogRFkc4fPMPUtGC8npPyUJZpXW35vJnVCqtSpK_kDDkt5GOxRKI-9bDH19o1FgmdS38obhJ1Vmukdatd1283MQAE6zndrVSbfBi0yxwRbC_HgHEyvGynITnQK3WwxE5LwE92W_b-Tn3us97JL5A";
 // 
 function invalidAccessToken(error) {
     // console.log(error);
@@ -176,7 +176,7 @@ function getTrack(url) {
     request(url, access_token, showTrack)
 }
 function showTrack(response) {
-    console.log(response);
+    // console.log(response);
     if (typeof response === "object") {
 
         if (typeof response.error === "object") {
@@ -213,17 +213,15 @@ function showTrack(response) {
         }
     }
 }
+
 function cleanModalCreatePlaylist() {
     document.getElementById("create-playlist-name").value="";
     document.getElementById("create-playlist-description").value="";
 }
-
 function postCreateAPlaylist() {
-    let urlCreatePlaylists = "https://api.spotify.com/v1/users/" + document.getElementById("user-display-name").innerHTML + "/playlists";
-    let name;
-    name = document.getElementById("create-playlist-name").value;
-    let description;
-    description = document.getElementById("create-playlist-description").value;
+    let urlCreatePlaylists = "https://api.spotify.com/v1/users/" + document.getElementById("user-id").innerHTML + "/playlists";
+    let name = document.getElementById("create-playlist-name").value;
+    let description = document.getElementById("create-playlist-description").value;
     if (name == "" || description == "")
         document.getElementById("info-create-playlist").innerHTML = "Por favor digite los campos";
     else {
