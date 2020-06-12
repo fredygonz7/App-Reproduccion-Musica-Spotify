@@ -11,13 +11,6 @@ function request(url, access_token, callback) {
     }
 }
 
-// var url = 'https://api.spotify.com/v1/users/fredgonz7/playlists';
-// var data = {
-//     "name": "New Playlist",
-//     "description": "New playlist description",
-//     "public": false
-// }
-
 function requestPost(url, access_token, data, callback) {
     fetch(url, {
         method: 'POST', // or 'PUT'

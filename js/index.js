@@ -1,4 +1,4 @@
-const access_token = "BQD0NxGxUO3rJJQFzexWCeSkrtwPChDZpeus8XrnGrh6atlOot21jFRSfOt_vvvEHJfydhVMQ9xrc0jT8cwVtNhjnhLbP7sCtapfhorEhCstlKy3jdAluSajo3pl4zvGRc_r8Az6CbF9ZmWGM00JmCeGg-p_u-dC9ur4_TQGLAgD__riYencKPEx-3xdW4xSH-OdtnCPIXzPzHVX4NGJNb8jleJ5qDIKZfHdNLd2aDqUiI7APLCz3DjOOD2zeQJQyyCAcNMjxtQ";
+const access_token = "BQDHtWJNq_uB9kLoZwoscnAJkwLqfvBcmLyMWGzvP8pBhKtKHCNBCx1L2GM19MJ_sWCbb-ZKgh-8vVIIRcQ2L_mkv9xwDJ0CBq5cTN1OkCjm5qmcJe2nAhfBVcxILDdN4OahvoNMYkyv-g--vsSqL4p6v21F2M-BOrwN10iIpjSuzNV374THnxCfxOT96atvXtZLba1Iqd_zbfWqCx4lT8ekrSg4R3o4TK0_PkMKWsj-7G1LD3FJi_0TsVhMYc5ONmPfVjRQBXg";
 // 
 function invalidAccessToken(error) {
     // console.log(error);
@@ -6,6 +6,7 @@ function invalidAccessToken(error) {
         document.getElementById("loggedin").className = "uk-hidden";
         document.getElementById("loggedin-botton-playlist").className = "uk-hidden";
         document.getElementById("loggedin-botton-create-playlist").className = "uk-hidden";
+        document.getElementById("loggedin-botton-search-track").className = "uk-hidden";
         alert(error.message);
     }
 }
@@ -37,7 +38,7 @@ function showUserProfile(response) {
             document.getElementById("loggedin").className = "";
             document.getElementById("loggedin-botton-playlist").className = "";
             document.getElementById("loggedin-botton-create-playlist").className = "";
-
+            document.getElementById("loggedin-botton-search-track").className = "";
             getPlaylists();
         }
     }
@@ -50,13 +51,14 @@ function getPlaylists() {
 function showPlaylists(response) {
     // console.log(response);
     if (typeof response === "object") {
-        
         if (typeof response.error === "object") {
             invalidAccessToken(response.error);
         }
         else if (typeof response.items === "object") {
             document.getElementById("playlists").hidden = false;
             document.getElementById("playlist").hidden = true;
+            document.getElementById("playlist-information").className = "";
+            document.getElementById("playlist-tracks").className = "uk-hidden";
             let playlists = document.getElementById("playlists");
             while (playlists.hasChildNodes()) {
                 playlists.removeChild(playlists.firstChild);
@@ -105,6 +107,8 @@ function showPlaylist(response) {
         else {
             document.getElementById("playlists").hidden = true;
             document.getElementById("playlist").hidden = false;
+            document.getElementById("playlist-information").className = "";
+            document.getElementById("playlist-tracks").className = "";
 
             document.getElementById("playlist-tittle").innerHTML = response.name;
             document.getElementById("playlist-tittle").setAttribute("id-playlist", response.id);
@@ -335,7 +339,74 @@ function showDeleteTrackOfPlaylist(response) {
         }
     }
 }
-// request("https://api.spotify.com/v1/tracks/4QjHUnSUkpMhunzvgK0efE", access_token, data, showConsole)
-// function showConsole(response) {
-//     console.log(response);
-// }
+
+// Search Track
+function searchTrack() {
+    let inputNameTrack = document.getElementById("search-track-name").value;
+    if (inputNameTrack!="") {
+        let nameTrack = inputNameTrack.replace(/ /g, '%20');
+        let id_playlist = document.getElementById("playlist-tittle").getAttribute("id-playlist");
+        let urlSearchTrack = "https://api.spotify.com/v1/search?q=" + nameTrack + "&type=track&limit=10"; //%2Cartist
+        request(urlSearchTrack, access_token, showListTracks)
+    }
+}
+function showListTracks(response) {
+    if (typeof response === "object") {
+        if (typeof response.error === "object") {
+            invalidAccessToken(response.error);
+        }
+        else if (typeof response.tracks.items === "object") {
+            document.getElementById("playlists").hidden = true;
+            document.getElementById("playlist").hidden = false;
+            document.getElementById("playlist-information").className = "uk-hidden";
+            document.getElementById("playlist-tracks").className = "";
+
+            let tbody_description = document.getElementById("playlist-table-tbody-description");
+            while (tbody_description.hasChildNodes()) {
+                tbody_description.removeChild(tbody_description.firstChild);
+            }
+
+            response.tracks.items.forEach(function (element, index) {
+                let tr = document.createElement("tr");
+
+                let td_img = document.createElement("td");
+                let img = document.createElement("img");
+                img.className = "uk-border-circle";
+                img.style.width = "40px"
+                if (typeof element.album.images[0] === "object")
+                    img.src = element.album.images[0].url;
+                td_img.appendChild(img);
+
+                let td_name = document.createElement("td");
+                let name = document.createElement("a");
+                name.className = "uk-link-reset";
+                name.appendChild(document.createTextNode(element.name));
+                name.onclick = function () { getTrack(element.href) };
+                td_name.appendChild(name);
+
+                let td_remove = document.createElement("td");
+                let a_remove = document.createElement("a");
+                a_remove.onclick = function () { getTrack(element.href) };
+                let span_remove = document.createElement("span");
+                span_remove.setAttribute("uk-icon", "play")
+                a_remove.appendChild(span_remove);
+                td_remove.appendChild(a_remove);
+
+                let td_artist = document.createElement("td");
+                for (let index = 0; index < element.artists.length; index++) {
+                    if (index == 0)
+                        td_artist.appendChild(document.createTextNode(element.artists[index].name));
+                    if (index > 0)
+                        td_artist.appendChild(document.createTextNode(", " + element.artists[index].name));
+                }
+
+                tr.appendChild(td_img);
+                tr.appendChild(td_name);
+                tr.appendChild(td_artist);
+                tr.appendChild(td_remove);
+
+                tbody_description.appendChild(tr);
+            });
+        }
+    }
+}
