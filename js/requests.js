@@ -45,6 +45,18 @@ function requestDelete(url, access_token, data, callback) {
         .catch(error => console.error(error))
         .then(response => callback(response));
 }
+function requestDeletePlaylist(url, access_token, callback) {
+    fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + access_token
+        }
+    }).then(res => res)
+        .catch(error => console.error(error))
+        .then(response => callback(response));
+}
 
 function requestPut(url, access_token, data, callback) {
     fetch(url, {
